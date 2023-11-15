@@ -19,7 +19,6 @@ public class Chore {
     private Boolean isCompleted;
 
     private LocalDate deadline;
-
     public Chore(String description, Boolean isCompleted, LocalDate deadline) {
         this.description = description;
         this.isCompleted = isCompleted;

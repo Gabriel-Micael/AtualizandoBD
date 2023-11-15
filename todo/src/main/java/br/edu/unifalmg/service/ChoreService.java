@@ -6,6 +6,7 @@ import br.edu.unifalmg.exception.*;
 import br.edu.unifalmg.repository.ChoreRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +62,8 @@ public class ChoreService {
 //        if (doesTheChoreExist) {
 //            throw new DuplicatedChoreException("The given chore already exists.");
 //        }
-
         // Using Constructor with all arguments
-        Chore chore = new Chore(description, Boolean.FALSE, deadline);
+        Chore chore = new Chore((long) (chores.size() + 1) ,description, Boolean.FALSE, deadline);
 
 
 //         Using Lombok's builder
@@ -106,7 +106,7 @@ public class ChoreService {
             throw new EmptyChoreListException("Unable to remove a chore from an empty list");
         }
         boolean isChoreExist = this.chores.stream().anyMatch((chore -> chore.getDescription().equals(description)
-            && chore.getDeadline().isEqual(deadline)));
+                && chore.getDeadline().isEqual(deadline)));
         if (!isChoreExist) {
             throw new ChoreNotFoundException("The given chore does not exist.");
         }
@@ -176,6 +176,15 @@ public class ChoreService {
      */
     public Boolean saveChores() {
         return repository.saveAll(this.chores);
+    }
+
+    public boolean update(Chore chore) {
+        try {
+            return this.repository.update(chore);
+        }catch (SQLException e){
+            System.out.println("SQL Failed");
+        }
+        return false;
     }
 
     private final Predicate<List<Chore>> isChoreListEmpty = choreList -> choreList.isEmpty();
